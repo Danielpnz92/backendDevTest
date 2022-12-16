@@ -24,9 +24,12 @@ public class CatalogController {
     @GetMapping("/product/{productId}/similar")
     @ResponseStatus(HttpStatus.OK)
     public SimilarProducts getProductSimilar(@PathVariable String productId){
+        //primero recuperamos los ids de productos similares al proporcionado, de una de las APIs preexistentes
         SimilarProductsIds similarProductsIds = restTemplate.getForObject("http://localhost:3001/product/"+productId+"/similarids", SimilarProductsIds.class);
 
+        //inicializamos la lista vacía de productos similares
         SimilarProducts similarProducts = new SimilarProducts();
+        //en este set(), para evitar elementos duplicados, se guardará los detalles de producto de cada id
         Set<ProductDetail> result = new HashSet<>();
 
         for (String id : similarProductsIds.getItems()) {
@@ -35,6 +38,7 @@ public class CatalogController {
             result.add(productDetail);
         }
 
+        //se pasan los datos a la instancia de SimilarProducts con el resultado final
         similarProducts.setSimilarProducts(result);
         return similarProducts;
     }
